@@ -62,11 +62,11 @@ button{font:inherit}.page{min-height:100vh;display:flex;flex-direction:column}.h
 
 <div class="actions">
 <button class="continue" id="continueBtn">Continue as Patient</button>
-<p class="login">Already have an account? <a href="/auth?mode=login">Sign in</a></p>
+<p class="login">Already have an account? <a href="/auth/access/?mode=login">Sign in</a></p>
 <div class="support"><span>Secure authentication</span><span>Privacy focused</span><span>NDPR-aligned</span></div>
 </div>
 
-<div class="invite">Have you been invited by a healthcare organization? <a href="/auth?mode=invite">Enter your invitation code</a></div>
+<div class="invite">Have you been invited by a healthcare organization? <a href="/auth/access/?mode=invite">Enter your invitation code</a></div>
 </main>
 
 <footer class="footer">© 2026 Trika Health. All rights reserved. <a href="/privacy">Privacy</a><a href="/terms">Terms</a></footer>
@@ -92,7 +92,7 @@ roles.forEach(card=>{
 });
 btn.addEventListener('click',()=>{
  const mode=selected==='patient'?'patient':selected==='professional'?'professional':'organization';
- window.location.href='/auth?mode='+mode;
+ window.location.href='/auth/onboarding/?role='+mode;
 });
 </script>
 </body>
