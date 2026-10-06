@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Breathe onboarding — secure connected healthcare access."/>
+<title>Set up your Breathe account</title>
+<style>
+:root{--ink:#102c2b;--muted:#667876;--teal:#0f7c73;--mint:#eaf8f5;--line:#dcebe8;--soft:#f7fbfa;--white:#fff;--danger:#a64040;--shadow:0 20px 60px rgba(16,44,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#f5fbfa,#fff 55%);min-height:100vh}.wrap{min-height:100vh;display:flex;flex-direction:column}.top{padding:24px 30px;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:20px}.mark{width:40px;height:40px;border-radius:12px;background:var(--teal);display:grid;place-items:center;color:#fff;font-weight:900}.brand small{display:block;font-size:7px;letter-spacing:.14em;color:var(--muted)}.back{border:0;background:none;color:var(--teal);font-weight:750;cursor:pointer}.main{width:min(760px,calc(100% - 32px));margin:auto;padding:20px 0 70px;flex:1}.progress{height:5px;background:#e5efed;border-radius:99px;overflow:hidden;margin-bottom:38px}.progress span{display:block;height:100%;background:var(--teal);border-radius:99px;transition:.25s}.heading{text-align:center;margin-bottom:28px}.eyebrow{color:var(--teal);font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.heading h1{font-size:clamp(30px,5vw,43px);letter-spacing:-.045em;line-height:1.1;margin:9px 0}.heading p{color:var(--muted);margin:0}.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow)}.field{margin-bottom:18px}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}.field small{display:block;color:var(--muted);font-size:11px;margin-top:5px}input,select{width:100%;padding:13px 14px;border:1px solid #cfe1de;border-radius:12px;background:#fff;color:var(--ink);font:inherit;outline:none}input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,124,115,.08)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.choice{border:1px solid var(--line);background:#fff;border-radius:13px;padding:14px;text-align:left;cursor:pointer;font-weight:750;color:var(--ink)}.choice.active{border-color:var(--teal);background:var(--mint);box-shadow:0 0 0 2px rgba(15,124,115,.07)}.choice span{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:3px}.actions{display:flex;justify-content:space-between;align-items:center;margin-top:25px;gap:12px}.btn{border:0;border-radius:12px;padding:13px 22px;font-weight:800;cursor:pointer}.primary{background:var(--teal);color:#fff;box-shadow:0 9px 22px rgba(15,124,115,.2)}.secondary{background:#eef7f5;color:var(--teal)}.note{margin-top:20px;padding:13px 15px;background:var(--soft);border-radius:13px;color:var(--muted);font-size:11px}.success{text-align:center;padding:15px 0}.success .check{width:68px;height:68px;border-radius:50%;background:var(--mint);color:var(--teal);display:grid;place-items:center;font-size:32px;margin:0 auto 18px}.success h2{font-size:28px;margin:0 0 8px}.success p{color:var(--muted);max-width:520px;margin:0 auto 24px}.footer{text-align:center;padding:20px;color:#879390;font-size:11px}@media(max-width:600px){.top{padding:18px}.main{width:min(100% - 24px,760px)}.card{padding:21px}.grid,.choice-grid{grid-template-columns:1fr}.actions{flex-direction:column-reverse}.actions .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/auth"><span class="mark">B</span><span>Breathe<small>BY TRIKAHEALTH</small></span></a><button class="back" onclick="history.back()">← Back</button></header>
+<main class="main"><div class="progress"><span id="bar"></span></div><section class="heading"><div class="eyebrow" id="eyebrow"></div><h1 id="title"></h1><p id="subtitle"></p></section><div class="card" id="content"></div></main>
+<footer class="footer">🔒 Secure authentication · Privacy focused · NDPR-aligned</footer>
+</div>
+<script>
+const params=new URLSearchParams(location.search), role=params.get('role')||'patient';
+const config={
+patient:{eyebrow:'PATIENT ONBOARDING',title:'Start your healthcare journey.',subtitle:'Create your Breathe account and connect to care when you need it.'},
+professional:{eyebrow:'PROFESSIONAL ONBOARDING',title:'Join the Breathe care network.',subtitle:'Set up your professional identity. Your facility or organization can control your access and permissions.'},
+organization:{eyebrow:'ORGANIZATION ONBOARDING',title:'Connect your organization to Breathe.',subtitle:'Create the organization workspace and its first Super Admin. Each institution has its own controlled ecosystem.'}
+};
+const c=config[role]||config.patient; document.getElementById('eyebrow').textContent=c.eyebrow;document.getElementById('title').textContent=c.title;document.getElementById('subtitle').textContent=c.subtitle;
+let step=1,total=role==='organization'?3:2;let data={};
+const bar=document.getElementById('bar'),content=document.getElementById('content');
+function progress(){bar.style.width=(step/total*100)+'%'}
+function field(label,id,type='text',placeholder='',hint=''){return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="'+type+'" placeholder="'+placeholder+'">'+(hint?'<small>'+hint+'</small>':'')+'</div>'}
+function choices(items,name){return '<div class="choice-grid">'+items.map((x,i)=>'<button type="button" class="choice" data-name="'+name+'" data-value="'+x[0]+'">'+x[1]+'<span>'+x[2]+'</span></button>').join('')+'</div>'}
+function render(){
+progress();
+if(step===1){
+ if(role==='patient') content.innerHTML='<h3>About you</h3>'+field('Full name','name','text','Your full name')+field('Mobile number','phone','tel','+234 800 000 0000','We will use this number for OTP verification.')+field('Email address (optional)','email','email','you@example.com')+'<div class="note">Your mobile number is used to securely verify your identity. You can add more health information after registration.</div>';
+ if(role==='professional') content.innerHTML='<h3>Your professional identity</h3>'+field('Full name','name','text','Your full name')+field('Mobile number','phone','tel','+234 800 000 0000','Used for secure OTP verification.')+field('Professional email','email','email','you@hospital.com')+'<div class="field"><label>Profession</label>'+choices([['doctor','Doctor','Medical doctor'],['nurse','Nurse','Nursing professional'],['pharmacist','Pharmacist','Pharmacy professional'],['lab','Laboratory scientist','Laboratory professional'],['radiologist','Radiologist','Radiology professional'],['other','Other','Healthcare professional']],'profession')+'</div>';
+ if(role==='organization') content.innerHTML='<h3>Organization type</h3>'+choices([['hospital','Hospital','Secondary or tertiary facility'],['clinic','Clinic / PHC','Primary or outpatient care'],['pharmacy','Pharmacy','Licensed pharmacy'],['laboratory','Laboratory','Diagnostic laboratory'],['hmo','HMO','Health maintenance organization'],['corporate','Corporate','Employee healthcare programme'],['government','Government','Public healthcare programme']],'orgType')+'<div class="note">Every organization receives its own Breathe ecosystem. Its Super Admin controls users, roles and access within that institution.</div>';
+}
+if(step===2){
+ if(role==='patient') content.innerHTML='<h3>Secure your account</h3>'+field('Create a password','password','password','At least 8 characters')+field('Confirm password','confirm','password','Repeat your password')+'<div class="note">After continuing, Breathe will send a one-time verification code to your mobile number.</div>';
+ if(role==='professional') content.innerHTML='<h3>Connect to your organization</h3>'+field('Invitation code (optional)','invite','text','e.g. BRTH-8K4P','If a hospital, clinic or organization invited you, enter the code here.')+'<div class="field"><label>Access preference</label>'+choices([['facility','Join an organization','Work under a facility or institution'],['independent','Independent professional','Provide care without a facility invitation']],'access')+'</div><div class="note">Organization-linked professionals receive permissions according to their assigned role. Clinical access remains auditable.</div>';
+ if(role==='organization') content.innerHTML='<h3>Organization details</h3>'+field('Organization name','orgName','text','Official organization name')+field('Registration / license number','reg','text','RC, license or relevant identifier')+'<div class="grid">'+field('City','city','text','City')+field('State','state','text','State')+'</div>';
+}
+if(step===3&&role==='organization') content.innerHTML='<h3>Create your Super Admin</h3>'+field('Super Admin full name','adminName','text','Administrator full name')+field('Admin mobile number','adminPhone','tel','+234 800 000 0000')+field('Admin email','adminEmail','email','admin@organization.com')+'<div class="note"><b>Important:</b> The Super Admin created here is restricted to this organization. Access to other institutions is not granted by default. Staff can later be added through controlled invitations and role-based permissions.</div>';
+content.innerHTML+='<div class="actions"><button class="btn secondary" id="prev" '+(step===1?'disabled':'')+'>Back</button><button class="btn primary" id="next">'+(step===total?'Create account':'Continue')+'</button></div>';
+document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{document.querySelectorAll('.choice[data-name="'+b.dataset.name+'"]').forEach(x=>x.classList.remove('active'));b.classList.add('active');data[b.dataset.name]=b.dataset.value});
+document.getElementById('prev').onclick=()=>{if(step>1){step--;render()}else location.href='/auth'};
+document.getElementById('next').onclick=next;
+}
+function collect(){content.querySelectorAll('input').forEach(i=>data[i.id]=i.value)}
+function next(){collect();if(step<total){step++;render();window.scrollTo({top:0,behavior:'smooth'})}else complete()}
+function complete(){bar.style.width='100%';content.innerHTML='<div class="success"><div class="check">✓</div><h2>Welcome to Breathe.</h2><p>Your '+(role==='organization'?'organization workspace and Super Admin setup':role==='professional'?'professional profile':'patient account')+' is ready to continue. In the production application, the next step would verify your identity and activate the appropriate workspace.</p><button class="btn primary" onclick="location.href=\'/auth\'">Return to Breathe</button></div>'}
+render();
+</script>
+</body>
+</html>
